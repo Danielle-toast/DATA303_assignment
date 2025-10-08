@@ -1,4 +1,38 @@
 % house303 MATLAB Code File
 % Description: MATLAB code for house303 analysis
+function [newA,H] = house303(A,ii,kk,ForceExact)
+% This subroutine does one Householder reflection on the matrix A
+% so that all elements in column k which lie below row i are set to
+% zero.    The routine outputs the reflected matrix newA and the 
+% Householder matrix H used to perform that reflection.
+%
+% USAGE:  [newA,H] = house303(A,i,k)
+%
+format compact;
+if ~exist('ForceExact'),  ForceExact = 1;  end
+[m,n] = size(A);             % get the size (m by n) of the matrix A
+Acolumn = zeros(m,1);        % initialize the lower part of column k
+Acolumn(ii:m) = A(ii:m,kk);  % copy column k from row i to last row
+lencol = norm(Acolumn,2);    % get the length of Acolumn
+w = Acolumn;                 % set the Householder vector to Acolumn
+
+% now add +/- length of Acolumn to w in the ii^th element.
+if Acolumn(ii) > 0
+    w(ii) = w(ii) + lencol;     
+else
+    w(ii) = w(ii) - lencol;
+end  
+
+len_w = norm(w,2);           
+if len_w == 0                % avoid divide by zero (do nothing and exit)
+    newA = A;  H = eye(m);  return;  
+end
+w = w/len_w;                  % normalize w
+H = eye(m) - (2*w)*w';
+newA = H * A;
+if ForceExact,   newA(ii+1:m,kk) = zeros(m-ii,1);  end
+return;
+
+end
 
 % Add your house303 MATLAB code here
