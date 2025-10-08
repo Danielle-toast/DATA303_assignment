@@ -1,15 +1,144 @@
 DATA303 Assignment Questions
 
-Add your assignment questions here:
-
-Question 1:
-
-
-Question 2:
-
-
-Question 3:
-
-
-Question 4:
-
+1
+DATA 303 Assignment : 2025
+Due: Tuesday 15 October 2025 at 11:50pm.
+Please Note: Briefly discuss means one or two sentences.
+1. Solve the following least squares problem with two Householder reflections using the matlab
+routine house303. You should need two Householder reflections.
+Ax =
+
+
+
+
+
+
+1 2
+0 1
+1 4
+1 2
+1 0
+
+
+
+
+
+
+ x1
+x2
+
+=
+
+
+
+
+
+
+4
+1
+5
+6
+1
+
+
+
+
+
+ = b
+Hint: Put A and b in a 5 × 3 augmented matrix A with A as the first two columns and b as the
+third. Do two Householder reflections on A to get the first two columns of A into row echelon
+form, yielding R. The third column of A will automatically be QT b.
+Without explicitly forming the residual vector r = b − Ax, what is the length of r at the least
+squares solution?
+2. A ridge regression problem has a design matrix A and right hand side vector b as follows
+A =
+
+
+
+
+2 −1 1
+1 0 1
+0 1 1
+−1 2 1
+
+
+
+ and b =
+
+
+
+
+0√6
+0
+0
+
+
+
+
+Do the following using hand calculations:
+(a) Calculate AT A.
+(b) Show that the following three vectors are the eigenvectors of AT A and find the corre-
+sponding eigenvalues.
+v1 =
+
+
+1
+1
+−1
+
+ v2 =
+
+
+1
+1
+2
+
+ and v3 =
+
+
+−1
+1
+0
+
+
+(c) What does the smallest of these eigenvalues tell you about AT A?
+(d) Find the eigendecomposition QDQT of AT A where Q is orthonormal, and D diagonal.
+(NB: Remember to normalize the eigenvectors before constructing Q.)
+(e) Using this eigendecomposition, solve the ridge regression equation
+AT A + ρI x = AT b
+for z = QT x as a function of ρ.
+(f) Show ∥x(ρ)∥2 ≤ √0.28 for all positive ρ.
+Please Turn Over
+2
+3. This question looks at fitting the function y = 2t+1 at t = −1, 0, and 1.001 using the polynomial
+model F (x, t) = x1 + x2t + x3t3. (NB: This model has a cubic term but no quadratic term.)
+(a) Use ridgemodel303 to find the least squares (i.e. ρ = 0) fit to the data. Do not centre
+the data.
+(b) On a separate plot, use ridgemodel303 to find the ridge regression fits for ρ = 10−5, 10−3,
+10−1, and 10 again without centering the data. Briefly comment on the how the model
+behaves as ρ is increased. (NB: These plots need to be done on a separate plot to the
+least squares fit from part (a), otherwise the vertical scale will make it impossible to see
+the ridge regression curves.)
+(c) Repeat part (b) of this question, but this time centre the data. Briefly comment on the
+effect of centering the data on the model’s behaviour as ρ varies.
+(d) Using ridgexr303 to plot ∥x∥2, ∥r∥2 and x against ρ for ρ in the range 10−5 ≤ ρ ≤ 10.
+Use p = 61 different values of ρ, and do not centre the data. (Hit return to get from one
+plot to the next.) The plot of x is a 3D plot, and by holding the left mouse button down
+with the cursor on it, you should be able to rotate it to get a good view from several
+angles.
+i. Briefly discuss the behaviour of ∥x∥2 and ∥r∥2 as ρ increases.
+ii. There is an ‘elbow’ in the path of x on the 3D plot. Briefly discuss the ‘elbow’ in
+light of the plots from parts(a) and (b) of this question.
+NB: On the 3D plot the x for ρ = 10−5 is marked with a red star. To rotate the 3D
+plot for a better view, place the cursor on the plot using the mouse, left click and
+hold, then move the cursor to rotate.
+iii. The log-log plot of ∥x∥2 against ρ also shows three distinct parts. Identify these parts
+with parts of the 3D graph showing the path of x.
+Hint: The crosses on each graph show the locations of each plotted point. They give an
+indication of how quickly x is changing with respect to ρ. With p = 61 every 10 crosses
+amounts to a change in ρ of a factor of 10. (p = 31 might also be useful, with 5 crosses
+per factor of 10 for ρ.) You can write your answers directly on the plots you generate if it
+is helpful.
+The matlab routines house303, ridgemodel303, and ridgexr303 are all in the same section as
+the assignments on learn. There is also a video on ECHO with the lecture recordings detailing how
+to use these three routines.
