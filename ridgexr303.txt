@@ -1,4 +1,99 @@
 % ridgexr303 MATLAB Code File
 % Description: MATLAB code for ridge cross-validation
+function ridgexr303(t,y,PowerList,RhoMin,RhoMax,p,CentreTheData)
+% This rudimentary script fits a polynomial function to the one D data
+% given by vectors t and y.  The model used is F(x,t) = sum x_j t^pj
+% where x_j are coefficients determined by the fitting process and 
+% pj is the jth power.   The coefficients x and residuals are calculated
+% for p values of rho from RhoMin to RhoMax.  ||x|| and ||residuals||
+% are plotted against rho along with the path of the first 2 or 3 
+% components of x
+%
+% USAGE: ridgexr303(t,y,PowerList,RhoMin,RhoMax,p,CentreTheData)
+%
+
+format compact;
+if ~exist('CentreTheData'),  CentreTheData = 0;  end
+% Make sure powers are non-negative integers.
+PowerList = round(max(PowerList,0));
+RhoVals = RhoMin + (RhoMax - RhoMin)*([0:p-1].^2) / ( (p-1)^2 );
+base = exp( log(RhoMax/RhoMin) / (p-1) );
+RhoVals = RhoMin*(base.^[0:p-1]);
+% Get the number of data points and number of terms in the model
+k = max(size(t));   n = max(size(PowerList));   n3 = min(n,3);
+% Make sure data t,y are column vectors
+[row,col] = size(y);    if col > 1  y = y';  end
+[row,col] = size(t);    if col > 1  t = t';  end
+% Make sure data is in increasing order of t values
+[t,index] = sort(t);  y = y(index);
+
+% Set up data centering if needed
+ytrue = y;   
+if CentreTheData,  
+    ymean = mean(y);  y = y - mean(y);
+    fprintf('\n\n The data has been centred on mean(y) = %18.9g \n\n',ymean);
+else
+    fprintf('\n\n The data has NOT been centred. \n\n');    
+end
+
+% Get the Design Matrix A, ATA = A^T A and RHS vector ATy = A^T y.
+[A,ATA,ATy] = GetDesignMatrix(t,y,PowerList,k,n);
+
+lenx = zeros(p,1);  lenr = lenx;  xpath = zeros(n3,p);  
+for jj = 1:p
+    x = ( ATA + RhoVals(jj)*eye(n) ) \ ATy;  r = y - A*x;
+    lenx(jj) = norm(x,2);  lenr(jj) = norm(r,2);
+    xpath(:,jj) = x(1:n3);
+end
+
+% Plot ||x|| and ||r|| versus rho on the same graph.
+plot(RhoVals,lenx,'r-+');   hold on;
+plot(RhoVals,lenr,'b--o');  hold on;
+xlabel('The length of x and 2-norm of residual vector plotted against rho');
+ylabel('Residuals are blue circles, red crosses are length of x');
+hold off;  pause;
+
+loglog(RhoVals,lenx,'r-+');   hold on;
+xlabel('Log-log plot of the length of x against rho.  This axis: rho.');
+ylabel('Length of x.');   hold off;
+pause,
+figure,
+% Plot path of x in two or the first three dimensions
+if n == 2  
+    plot(xpath(1,:),xpath(2,:),'b-+');  hold on;
+    plot(xpath(1,1),xpath(2,1),'rv');  hold on;
+    plot(xpath(1,1),xpath(2,1),'r^');  hold on;
+    plot(0,0,'go');  hold on;  
+    xlabel('Path of x as a function of rho: x(1) axis');
+    ylabel('x(2) axis.  RhoMin is at red star');
+else 
+    plot3(xpath(1,:),xpath(2,:),xpath(3,:),'b-+');   hold on; 
+    plot3(xpath(1,1),xpath(2,1),xpath(3,1),'rv');    hold on;  
+    plot3(xpath(1,1),xpath(2,1),xpath(3,1),'r^');    hold on;  
+    plot3(0,0,0,'go');  hold on;  
+    xlabel('Path of x as a function of rho: x(1) axis');
+    ylabel('x(2) axis.  Origin is green circle');
+    zlabel('x(3) axis.  RhoMin is at red star');
+    title('Path of x as a function of rho.  Rhomin at red star');
+end
+
+return
+
+% -------------------------------------------------
+function [A,ATA,ATy] = GetDesignMatrix(t,y,PowerList,k,n)
+
+A = zeros(k,n);
+for jj = 1:n  A(:,jj) = t.^PowerList(jj);  end
+ATA = A'*A;  ATy = A'*y;
+return
+
+% -------------------------------------------------
+function F = GetModelCurve(x,PowerList,tVals,NrPoints)
+
+Fvals = zeros(NrPoints,1);
+for jj = 1:NrPoints
+    Fvals(jj) = x' * (tVals(jj).^PowerList);
+end
+return
 
 % Add your ridgexr303 MATLAB code here
